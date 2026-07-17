@@ -2,6 +2,15 @@
 (function () {
   "use strict";
 
+  /* ------------------------------------------------------------------
+     Contact form delivery.
+     Sign up at formspree.io, create a form, and paste its endpoint below
+     (it looks like https://formspree.io/f/abcdwxyz). Until you do, the form
+     falls back to opening the visitor's email app so it still works.
+     ------------------------------------------------------------------ */
+  var FORMSPREE_ENDPOINT = "https://formspree.io/f/YOUR_FORM_ID";
+  var CONTACT_EMAIL = "hello@revisechicago.com";
+
   var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* ---------- nav scroll state ---------- */
@@ -107,36 +116,107 @@
     setPos(range.value);
   });
 
-  /* ---------- contact form -> email ---------- */
+  /* ---------- contact form ---------- */
   var form = document.getElementById("contact-form");
   if (form) {
+    var note = document.getElementById("form-note");
+    var submitBtn = document.getElementById("form-submit");
+    var configured = FORMSPREE_ENDPOINT.indexOf("YOUR_FORM_ID") === -1;
+
+    if (configured) form.action = FORMSPREE_ENDPOINT;
+
+    function val(fieldName) {
+      var el = form.elements[fieldName];
+      return el && el.value ? el.value.trim() : "";
+    }
+
+    function say(msg, ok) {
+      note.textContent = msg;
+      note.className = ok ? "form-note ok" : "form-note";
+    }
+
+    function showThanks() {
+      var box = document.createElement("div");
+      box.className = "form-sent";
+      var h = document.createElement("h3");
+      h.textContent = "Got it — thank you.";
+      var p = document.createElement("p");
+      p.textContent =
+        "We'll look at your site properly and reply within a day with the audit. No pressure after that.";
+      box.appendChild(h);
+      box.appendChild(p);
+      form.parentNode.replaceChild(box, form);
+    }
+
     form.addEventListener("submit", function (e) {
       e.preventDefault();
-      var name = form.name.value.trim();
-      var biz = form.business.value.trim();
-      var site = form.website.value.trim();
-      var msg = form.message.value.trim();
-      var note = document.getElementById("form-note");
 
-      if (!name || !biz) {
-        note.textContent = "Just your name and business name and we're good to go.";
+      var who = val("name");
+      var email = val("email");
+      var biz = val("business");
+
+      if (!who || !biz) {
+        say("Just your name and business name and we're good to go.");
+        return;
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        say("We need a working email address to send the audit back to.");
         return;
       }
 
-      var subject = "Free audit request — " + biz;
-      var body =
-        "Name: " + name + "\n" +
-        "Business: " + biz + "\n" +
-        (site ? "Current site: " + site + "\n" : "") +
-        (msg ? "\n" + msg + "\n" : "");
+      // No Formspree ID yet — hand off to the visitor's email app instead.
+      if (!configured) {
+        var body =
+          "Name: " + who + "\n" +
+          "Email: " + email + "\n" +
+          "Business: " + biz +
+          (val("website") ? "\nCurrent site: " + val("website") : "") +
+          (val("message") ? "\n\n" + val("message") : "") + "\n";
+        window.location.href =
+          "mailto:" + CONTACT_EMAIL +
+          "?subject=" + encodeURIComponent("Free audit request — " + biz) +
+          "&body=" + encodeURIComponent(body);
+        say("Opening your email app — hit send and we'll take it from there.", true);
+        return;
+      }
 
-      window.location.href =
-        "mailto:hello@revisechicago.com?subject=" +
-        encodeURIComponent(subject) +
-        "&body=" +
-        encodeURIComponent(body);
+      if (form.elements._subject) {
+        form.elements._subject.value = "Free audit request — " + biz;
+      }
 
-      note.textContent = "Opening your email app — hit send and we'll take it from there.";
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Sending…";
+      say("");
+
+      fetch(FORMSPREE_ENDPOINT, {
+        method: "POST",
+        headers: { Accept: "application/json" },
+        body: new FormData(form)
+      })
+        .then(function (res) {
+          if (res.ok) {
+            showThanks();
+            return;
+          }
+          return res.json().then(function (data) {
+            var errs = data && data.errors;
+            throw new Error(
+              errs && errs.length
+                ? errs
+                    .map(function (x) { return x.message; })
+                    .join(", ")
+                : "That didn't go through."
+            );
+          });
+        })
+        .catch(function (err) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Send it over";
+          say(
+            (err && err.message ? err.message + " " : "") +
+              "Email us directly at " + CONTACT_EMAIL + " and we'll pick it up there."
+          );
+        });
     });
   }
 

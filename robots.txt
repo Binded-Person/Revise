@@ -1,0 +1,8 @@
+# Revise — https://github.com/Binded-Person/Revise
+# Everything here is public marketing content; crawl all of it.
+
+User-agent: *
+Allow: /
+
+# Add this line once the real domain is live (and create the sitemap then):
+# Sitemap: https://YOUR-DOMAIN.com/sitemap.xml

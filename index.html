@@ -3,16 +3,115 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Revise — A web studio in Chicago</title>
-  <meta name="description" content="Revise is a two-person web studio in Chicago. We take outdated small-business websites and turn them into fast, modern sites that bring customers through the door." />
-  <meta property="og:title" content="Revise — A web studio in Chicago" />
-  <meta property="og:description" content="Outdated website? We revise it. Honest pricing, hand-built sites for Chicago's local businesses." />
+  <title>Revise — Website Design &amp; Redesign for Chicago Small Businesses</title>
+  <meta name="description" content="Revise is a web studio in Chicago that redesigns outdated small-business websites. Mobile-first, hand-built, and fast — from $400. Get a free website audit." />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="author" content="Revise" />
+  <meta name="theme-color" content="#F6F4EE" />
+
+  <!-- Social sharing. NOTE: og:url and og:image need the real domain — add them once it's purchased. -->
+  <meta property="og:site_name" content="Revise" />
+  <meta property="og:title" content="Revise — Website Design &amp; Redesign for Chicago Small Businesses" />
+  <meta property="og:description" content="Outdated website? We revise it. Mobile-first sites hand-built for Chicago's local businesses, from $400. Free audit, honest pricing." />
   <meta property="og:type" content="website" />
+  <meta property="og:locale" content="en_US" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Revise — Website Design &amp; Redesign for Chicago Small Businesses" />
+  <meta name="twitter:description" content="Outdated website? We revise it. Mobile-first sites hand-built for Chicago's local businesses, from $400." />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23191713'/%3E%3Ctext x='32' y='44' font-family='Georgia, serif' font-size='36' font-weight='600' fill='%23F6F4EE' text-anchor='middle'%3ER%3C/text%3E%3Ccircle cx='47' cy='44' r='4' fill='%23D93A2B'/%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&family=Caveat:wght@500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
+
+  <!-- Structured data. Tells Google/AI search what this business is, where it works, and what it charges.
+       Add "url" and "logo" once the domain is purchased. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    "name": "Revise",
+    "description": "Revise is a two-person web studio in Chicago that redesigns outdated small-business websites into fast, mobile-first sites.",
+    "slogan": "A second chance at a first impression.",
+    "email": "hello@revisechicago.com",
+    "priceRange": "$400-$1500",
+    "serviceType": "Website design and redesign for small businesses",
+    "knowsAbout": ["Website redesign", "Small business web design", "Mobile-first web design", "Local SEO", "Google Business Profile setup"],
+    "areaServed": [
+      { "@type": "City", "name": "Chicago", "address": { "@type": "PostalAddress", "addressLocality": "Chicago", "addressRegion": "IL", "addressCountry": "US" } },
+      { "@type": "Place", "name": "Lincoln Park" },
+      { "@type": "Place", "name": "Andersonville" },
+      { "@type": "Place", "name": "Logan Square" },
+      { "@type": "Place", "name": "Pilsen" },
+      { "@type": "Place", "name": "Lincoln Square" },
+      { "@type": "Place", "name": "Evanston" }
+    ],
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "Website packages",
+      "itemListElement": [
+        {
+          "@type": "Offer",
+          "name": "The Refresh",
+          "description": "Redesign of an existing site: up to 5 pages, rebuilt mobile-first, a full pass on your copy, two rounds of revisions.",
+          "price": "400",
+          "priceCurrency": "USD",
+          "priceSpecification": { "@type": "PriceSpecification", "price": "400", "priceCurrency": "USD", "valueAddedTaxIncluded": false }
+        },
+        {
+          "@type": "Offer",
+          "name": "The Rebuild",
+          "description": "A new site from scratch: up to 5 pages designed from a clean slate, copy written with you, basic SEO, Google Business Profile setup.",
+          "price": "800",
+          "priceCurrency": "USD",
+          "priceSpecification": { "@type": "PriceSpecification", "price": "800", "priceCurrency": "USD", "valueAddedTaxIncluded": false }
+        },
+        {
+          "@type": "Offer",
+          "name": "The Care Plan",
+          "description": "Monthly updates and small edits, hosting managed for you, fixes within 48 hours, cancel anytime.",
+          "price": "75",
+          "priceCurrency": "USD",
+          "priceSpecification": { "@type": "UnitPriceSpecification", "price": "75", "priceCurrency": "USD", "unitCode": "MON" }
+        }
+      ]
+    }
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How long does a project take?",
+        "acceptedAnswer": { "@type": "Answer", "text": "A Refresh usually takes two to three weeks; a Rebuild, three to four. We agree on a delivery date in the contract before any money changes hands." }
+      },
+      {
+        "@type": "Question",
+        "name": "What do you need from me?",
+        "acceptedAnswer": { "@type": "Answer", "text": "About an hour of your time, your photos and hours, and honest answers to a short intake form. We handle everything else, including writing the words." }
+      },
+      {
+        "@type": "Question",
+        "name": "Do I own the site when it's done?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Completely. Domain, files, accounts — everything is in your name the day the final payment clears. No hostage situations." }
+      },
+      {
+        "@type": "Question",
+        "name": "Why are you cheaper than agencies?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Because we're students with no office and no payroll — not because the work is worth less. Compare the before-and-afters and decide for yourself." }
+      },
+      {
+        "@type": "Question",
+        "name": "What happens after launch?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Your choice. Join the Care Plan and there's a real person on call for updates and fixes — or take the keys and go. Either way, nothing breaks when you leave." }
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
 
@@ -258,10 +357,6 @@
             </ul>
           </div>
           <div class="plan featured">
-            <div class="annotation" aria-hidden="true">
-              <svg viewBox="0 0 200 70" preserveAspectRatio="none"><path d="M100 6 C 165 4, 196 18, 194 36 C 192 56, 140 66, 96 64 C 48 62, 6 54, 8 34 C 10 15, 52 7, 112 8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
-              <span>most popular</span>
-            </div>
             <h3 class="plan-name">The Rebuild</h3>
             <p class="plan-price"><span class="from">from</span> $800</p>
             <p class="plan-tag">A new site from a clean slate.</p>
@@ -400,10 +495,14 @@
           </p>
           <p class="contact-email">Prefer email? <a href="mailto:hello@revisechicago.com">hello@revisechicago.com</a></p>
         </div>
-        <form class="contact-form reveal" id="contact-form" novalidate>
+        <form class="contact-form reveal" id="contact-form" method="POST" novalidate>
           <div class="field">
             <label for="f-name">Your name</label>
             <input id="f-name" name="name" type="text" autocomplete="name" required />
+          </div>
+          <div class="field">
+            <label for="f-email">Your email</label>
+            <input id="f-email" name="email" type="email" autocomplete="email" required />
           </div>
           <div class="field">
             <label for="f-biz">Business name</label>
@@ -417,8 +516,14 @@
             <label for="f-msg">What's going on?</label>
             <textarea id="f-msg" name="message" rows="4" placeholder="e.g. Our site looks fine on a computer but broken on phones, and nobody can find our hours."></textarea>
           </div>
-          <button class="btn btn-light" type="submit">Send it over</button>
-          <p class="form-note" id="form-note" role="status"></p>
+          <input type="hidden" name="_subject" value="New audit request from the Revise site" />
+          <!-- Spam trap: bots fill hidden fields, humans can't see it. Formspree drops anything with _gotcha set. -->
+          <div class="gotcha" aria-hidden="true">
+            <label for="f-gotcha">Leave this empty</label>
+            <input id="f-gotcha" type="text" name="_gotcha" tabindex="-1" autocomplete="off" />
+          </div>
+          <button class="btn btn-light" type="submit" id="form-submit">Send it over</button>
+          <p class="form-note" id="form-note" role="status" aria-live="polite"></p>
         </form>
       </div>
     </section>
