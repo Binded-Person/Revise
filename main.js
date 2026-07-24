@@ -8,8 +8,8 @@
      (it looks like https://formspree.io/f/abcdwxyz). Until you do, the form
      falls back to opening the visitor's email app so it still works.
      ------------------------------------------------------------------ */
-  var FORMSPREE_ENDPOINT = "https://formspree.io/f/YOUR_FORM_ID";
-  var CONTACT_EMAIL = "hello@revisechicago.com";
+  var FORMSPREE_ENDPOINT = "https://formspree.io/f/xqeryqpq";
+  var CONTACT_EMAIL = "contactrevise12@gmail.com";
 
   var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
