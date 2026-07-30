@@ -2,16 +2,9 @@
 (function () {
   "use strict";
 
-  /* ------------------------------------------------------------------
-     Contact form delivery.
-     Sign up at formspree.io, create a form, and paste its endpoint below
-     (it looks like https://formspree.io/f/abcdwxyz). Until you do, the form
-     falls back to opening the visitor's email app so it still works.
-     ------------------------------------------------------------------ */
-  var FORMSPREE_ENDPOINT = "https://formspree.io/f/xqeryqpq";
   var CONTACT_EMAIL = "contactrevise12@gmail.com";
-
   var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var isTouchLayout = window.matchMedia("(max-width: 700px)").matches;
 
   /* ---------- nav scroll state ---------- */
   var nav = document.querySelector(".nav");
@@ -20,6 +13,27 @@
   }
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
+
+  /* ---------- nav: mark the section you're in ---------- */
+  var navLinks = Array.prototype.slice.call(document.querySelectorAll(".nav-links a"));
+  var sections = navLinks
+    .map(function (a) { return document.querySelector(a.getAttribute("href")); })
+    .filter(Boolean);
+
+  if (sections.length && "IntersectionObserver" in window) {
+    var spy = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          navLinks.forEach(function (a) {
+            a.classList.toggle("is-current", a.getAttribute("href") === "#" + entry.target.id);
+          });
+        });
+      },
+      { rootMargin: "-45% 0px -50% 0px" }
+    );
+    sections.forEach(function (s) { spy.observe(s); });
+  }
 
   /* ---------- hero canvas: drifting warm gradient ---------- */
   var canvas = document.getElementById("hero-canvas");
@@ -74,46 +88,97 @@
     } else {
       var running = true;
       var loop = function (t) {
-        if (running) frame(t);
-        requestAnimationFrame(loop);
+        if (running) {
+          frame(t);
+          requestAnimationFrame(loop);
+        }
       };
       requestAnimationFrame(loop);
-      // pause when the hero is offscreen
       new IntersectionObserver(function (entries) {
-        running = entries[0].isIntersecting;
+        var visible = entries[0].isIntersecting;
+        if (visible && !running) {
+          running = true;
+          requestAnimationFrame(loop);
+        } else {
+          running = visible;
+        }
       }).observe(canvas);
     }
   }
 
-  /* ---------- scroll reveals ---------- */
-  var revealEls = document.querySelectorAll(".reveal");
-  if ("IntersectionObserver" in window && !reducedMotion) {
-    var io = new IntersectionObserver(
-      function (entries) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("in");
-            io.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
-    );
-    revealEls.forEach(function (el) { io.observe(el); });
-  } else {
-    revealEls.forEach(function (el) { el.classList.add("in"); });
+  /* ---------- before/after comparisons ---------- */
+  function describe(v) {
+    if (v >= 85) return "Showing the original site";
+    if (v >= 60) return "Mostly the original site";
+    if (v > 40) return "Half original, half redesign";
+    if (v > 15) return "Mostly the redesign";
+    return "Showing the redesign";
   }
 
-  /* ---------- before/after compare sliders ---------- */
   document.querySelectorAll(".compare").forEach(function (compare) {
     var range = compare.querySelector(".compare-range");
+    var frame = compare.closest(".frame");
+    var toggle = frame ? frame.querySelector(".compare-toggle") : null;
+
     function setPos(v) {
       compare.style.setProperty("--pos", v + "%");
+      if (range) {
+        range.value = v;
+        range.setAttribute("aria-valuetext", describe(v));
+      }
+      if (toggle) {
+        toggle.querySelectorAll("button").forEach(function (b) {
+          b.classList.toggle("is-active", Number(b.dataset.pos) === Number(v));
+        });
+      }
     }
-    range.addEventListener("input", function () {
-      setPos(range.value);
+
+    if (range) {
+      range.addEventListener("input", function () {
+        compare.classList.remove("is-demo");
+        setPos(Number(range.value));
+      });
+      range.setAttribute("aria-valuetext", describe(Number(range.value)));
+    }
+
+    /* On touch the toggle replaces the drag, and it opens on "Before",
+       so show the original in full rather than the 88% drag resting state. */
+    if (isTouchLayout) setPos(100);
+
+    if (toggle) {
+      toggle.querySelectorAll("button").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          compare.classList.add("is-demo");
+          setPos(Number(btn.dataset.pos));
+        });
+      });
+    }
+
+    /* Teach the interaction once: sweep to the redesign and back,
+       so a visitor who never drags still sees the finished work. */
+    if (!reducedMotion && !isTouchLayout && "IntersectionObserver" in window) {
+      var taught = false;
+      var io = new IntersectionObserver(
+        function (entries) {
+          if (!entries[0].isIntersecting || taught) return;
+          taught = true;
+          io.disconnect();
+          compare.classList.add("is-demo");
+          setTimeout(function () { setPos(18); }, 420);
+          setTimeout(function () { setPos(88); }, 2100);
+        },
+        { threshold: 0.55 }
+      );
+      io.observe(compare);
+    }
+  });
+
+  /* ---------- pricing CTA carries the choice to the form ---------- */
+  var packageField = document.getElementById("f-package");
+  document.querySelectorAll(".plan-cta").forEach(function (cta) {
+    cta.addEventListener("click", function () {
+      if (packageField && cta.dataset.package) packageField.value = cta.dataset.package;
     });
-    setPos(range.value);
   });
 
   /* ---------- contact form ---------- */
@@ -121,103 +186,148 @@
   if (form) {
     var note = document.getElementById("form-note");
     var submitBtn = document.getElementById("form-submit");
-    var configured = FORMSPREE_ENDPOINT.indexOf("YOUR_FORM_ID") === -1;
+    var wrap = document.getElementById("form-region");
+    var attempted = false;
 
-    if (configured) form.action = FORMSPREE_ENDPOINT;
+    var RULES = [
+      {
+        id: "f-name",
+        test: function (v) { return v.length > 0; },
+        message: "Please add your name so we know who we're writing back to."
+      },
+      {
+        id: "f-email",
+        test: function (v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); },
+        message: "We need a working email address to send the audit back to."
+      },
+      {
+        id: "f-biz",
+        test: function (v) { return v.length > 0; },
+        message: "Please add your business name so we can look up your site."
+      },
+      {
+        id: "f-url",
+        optional: true,
+        test: function (v) { return /^([a-z][a-z0-9+.-]*:\/\/)?[^\s.]+\.[^\s]{2,}$/i.test(v); },
+        message: "That doesn't look like a web address. Something like yoursite.com works."
+      }
+    ];
 
-    function val(fieldName) {
-      var el = form.elements[fieldName];
-      return el && el.value ? el.value.trim() : "";
+    function fieldOf(id) { return document.getElementById(id); }
+
+    function setError(id, message) {
+      var input = fieldOf(id);
+      var wrapper = input.closest(".field");
+      var slot = document.getElementById("e-" + id.slice(2));
+      if (message) {
+        wrapper.classList.add("has-error");
+        input.setAttribute("aria-invalid", "true");
+        if (slot) slot.textContent = message;
+      } else {
+        wrapper.classList.remove("has-error");
+        input.removeAttribute("aria-invalid");
+        if (slot) slot.textContent = "";
+      }
     }
 
-    function say(msg, ok) {
-      note.textContent = msg;
-      note.className = ok ? "form-note ok" : "form-note";
+    /* Validate every field in one pass so two problems cost one round trip. */
+    function validate() {
+      var failed = [];
+      RULES.forEach(function (rule) {
+        var input = fieldOf(rule.id);
+        if (!input) return;
+        var value = input.value.trim();
+        var empty = value.length === 0;
+        var ok = rule.optional && empty ? true : rule.test(value);
+        setError(rule.id, ok ? "" : rule.message);
+        if (!ok) failed.push(rule.id);
+      });
+      return failed;
     }
 
-    function showThanks() {
+    RULES.forEach(function (rule) {
+      var input = fieldOf(rule.id);
+      if (!input) return;
+      input.addEventListener("blur", function () {
+        if (!attempted) return;
+        var value = input.value.trim();
+        var empty = value.length === 0;
+        var ok = rule.optional && empty ? true : rule.test(value);
+        setError(rule.id, ok ? "" : rule.message);
+      });
+    });
+
+    function showThanks(email) {
       var box = document.createElement("div");
       box.className = "form-sent";
+
       var h = document.createElement("h3");
       h.textContent = "Got it — thank you.";
+
       var p = document.createElement("p");
-      p.textContent =
-        "We'll look at your site properly and reply within a day with the audit. No pressure after that.";
+      p.appendChild(document.createTextNode("We'll look at your site properly and reply to "));
+      var strong = document.createElement("strong");
+      strong.textContent = email;
+      p.appendChild(strong);
+      p.appendChild(document.createTextNode(" within a day. No pressure after that."));
+
+      var p2 = document.createElement("p");
+      p2.textContent = "Wrong address, or thought of something else? Just email us and we'll pick it up there.";
+
       box.appendChild(h);
       box.appendChild(p);
-      form.parentNode.replaceChild(box, form);
+      box.appendChild(p2);
+
+      /* Replace only the form. #form-note lives outside it, so the live
+         region survives and the confirmation is announced. */
+      form.replaceWith(box);
+      note.textContent = "Your request was sent.";
     }
 
     form.addEventListener("submit", function (e) {
       e.preventDefault();
+      attempted = true;
 
-      var who = val("name");
-      var email = val("email");
-      var biz = val("business");
-
-      if (!who || !biz) {
-        say("Just your name and business name and we're good to go.");
-        return;
-      }
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        say("We need a working email address to send the audit back to.");
-        return;
-      }
-
-      // No Formspree ID yet — hand off to the visitor's email app instead.
-      if (!configured) {
-        var body =
-          "Name: " + who + "\n" +
-          "Email: " + email + "\n" +
-          "Business: " + biz +
-          (val("website") ? "\nCurrent site: " + val("website") : "") +
-          (val("message") ? "\n\n" + val("message") : "") + "\n";
-        window.location.href =
-          "mailto:" + CONTACT_EMAIL +
-          "?subject=" + encodeURIComponent("Free audit request — " + biz) +
-          "&body=" + encodeURIComponent(body);
-        say("Opening your email app — hit send and we'll take it from there.", true);
+      var failed = validate();
+      if (failed.length) {
+        note.textContent =
+          failed.length === 1
+            ? "One field needs a look before this can send."
+            : failed.length + " fields need a look before this can send.";
+        var first = fieldOf(failed[0]);
+        if (first) first.focus();
         return;
       }
 
-      if (form.elements._subject) {
-        form.elements._subject.value = "Free audit request — " + biz;
-      }
+      var email = fieldOf("f-email").value.trim();
+      var biz = fieldOf("f-biz").value.trim();
+      var subject = form.elements._subject;
+      if (subject) subject.value = "Free audit request — " + biz;
 
       submitBtn.disabled = true;
       submitBtn.textContent = "Sending…";
-      say("");
+      note.textContent = "Sending your request…";
 
-      fetch(FORMSPREE_ENDPOINT, {
+      fetch(form.action, {
         method: "POST",
         headers: { Accept: "application/json" },
         body: new FormData(form)
       })
         .then(function (res) {
-          if (res.ok) {
-            showThanks();
-            return;
-          }
-          return res.json().then(function (data) {
-            var errs = data && data.errors;
-            throw new Error(
-              errs && errs.length
-                ? errs
-                    .map(function (x) { return x.message; })
-                    .join(", ")
-                : "That didn't go through."
-            );
-          });
+          if (!res.ok) throw new Error("rejected");
+          showThanks(email);
         })
-        .catch(function (err) {
+        .catch(function () {
+          /* Never surface the raw exception — name the problem and the way out. */
           submitBtn.disabled = false;
           submitBtn.textContent = "Send it over";
-          say(
-            (err && err.message ? err.message + " " : "") +
-              "Email us directly at " + CONTACT_EMAIL + " and we'll pick it up there."
-          );
+          note.textContent =
+            "That didn't send — your connection may have dropped. Try again, or email us at " +
+            CONTACT_EMAIL + " and we'll pick it up there.";
         });
     });
+
+    if (wrap) wrap.setAttribute("data-ready", "true");
   }
 
   /* ---------- footer year ---------- */
