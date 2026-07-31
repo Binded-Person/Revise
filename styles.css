@@ -513,7 +513,7 @@ h3 { font-size: clamp(20px, 2.2vw, 26px); }
 /* Without JS there is no control to move this, so the redesign shows in
    full; .js restores the resting split that the drag starts from. */
 .compare { --pos: 0%; }
-.js .compare { --pos: 75%; }
+.js .compare { --pos: 45%; }
 
 .compare {
   position: relative;
@@ -704,10 +704,14 @@ h3 { font-size: clamp(20px, 2.2vw, 26px); }
   flex-direction: column;
 }
 
+/* The reveal uncovers the right-hand side first, so the content that has
+   to survive a partial view lives there. */
 .m1a-hero {
   flex: 1;
   display: flex;
   flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
   padding: 3cqw 5cqw 4cqw;
   background:
     radial-gradient(120% 150% at 82% 18%, rgba(243, 146, 84, 0.62), transparent 58%),
@@ -719,12 +723,17 @@ h3 { font-size: clamp(20px, 2.2vw, 26px); }
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 3cqw;
+  width: 100%;
   margin-bottom: auto;
 }
 
+/* Each concept gets its own display face. A taquería, a salon and a
+   tutoring centre would never land on the same typeface, and using
+   Revise's own on all three would contradict the pitch. */
 .m1a-top b {
-  font-family: var(--font-display);
-  font-size: 3.4cqw;
+  font-family: "Alfa Slab One", Rockwell, Georgia, serif;
+  font-size: 3cqw;
   color: #FBF3E8;
   letter-spacing: 0.01em;
 }
@@ -739,10 +748,11 @@ h3 { font-size: clamp(20px, 2.2vw, 26px); }
 }
 
 .m1a-hero-text h4 {
-  font-family: var(--font-display);
-  font-size: 6.2cqw;
-  font-weight: 500;
-  line-height: 1.05;
+  font-family: "Alfa Slab One", Rockwell, Georgia, serif;
+  font-size: 5.2cqw;
+  font-weight: 400;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
   color: #FFF6EA;
 }
 
@@ -824,20 +834,21 @@ h3 { font-size: clamp(20px, 2.2vw, 26px); }
 }
 
 .m2a-left b {
-  font-family: var(--font-display);
-  font-size: 3.2cqw;
-  font-weight: 500;
+  font-family: "Italiana", "Didot", Georgia, serif;
+  font-size: 3.6cqw;
+  font-weight: 400;
   color: #7A4E55;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   margin-bottom: auto;
 }
 
 .m2a-left h4 {
-  font-family: var(--font-display);
-  font-size: 5.4cqw;
-  font-weight: 500;
-  line-height: 1.08;
+  font-family: "Italiana", "Didot", Georgia, serif;
+  font-size: 6cqw;
+  font-weight: 400;
+  line-height: 1.14;
+  letter-spacing: 0.01em;
   color: #33261C;
 }
 
@@ -940,10 +951,10 @@ h3 { font-size: clamp(20px, 2.2vw, 26px); }
 }
 
 .m3a-bar b {
-  font-family: var(--font-display);
+  font-family: "Zilla Slab", Rockwell, Georgia, serif;
   font-size: 3.2cqw;
   color: #fff;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .m3a-btn {
@@ -964,9 +975,10 @@ h3 { font-size: clamp(20px, 2.2vw, 26px); }
 }
 
 .m3a-main h4 {
-  font-family: var(--font-display);
+  font-family: "Zilla Slab", Rockwell, Georgia, serif;
   font-size: 4.8cqw;
-  font-weight: 500;
+  font-weight: 600;
+  line-height: 1.14;
   color: #1C2833;
 }
 
