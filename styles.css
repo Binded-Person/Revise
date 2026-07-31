@@ -418,36 +418,10 @@ h3 { font-size: clamp(20px, 2.2vw, 26px); }
 
 .marquee-track i { color: var(--red); font-style: normal; }
 
-.marquee.is-paused .marquee-track { animation-play-state: paused; }
-
-.marquee-pause {
-  flex: none;
-  width: 30px; height: 30px;
-  display: grid;
-  place-items: center;
-  border: 1px solid var(--rule);
-  border-radius: 999px;
-  background: transparent;
-  cursor: pointer;
-  padding: 0;
-}
-
-.marquee-pause:hover { border-color: var(--red); }
-
-/* two bars = pause; swaps to a triangle when already paused */
-.marquee-pause-icon {
-  width: 8px; height: 9px;
-  border-left: 2.5px solid var(--ink-soft);
-  border-right: 2.5px solid var(--ink-soft);
-}
-
-.marquee-pause[aria-pressed="true"] .marquee-pause-icon {
-  width: 0; height: 0;
-  border-left: 8px solid var(--ink-soft);
-  border-right: 0;
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
-}
+/* no visible pause control, so stop the motion whenever a pointer or
+   keyboard focus is anywhere in the band */
+.marquee:hover .marquee-track,
+.marquee:focus-within .marquee-track { animation-play-state: paused; }
 
 @keyframes marquee {
   from { transform: translateX(0); }
@@ -537,7 +511,7 @@ h3 { font-size: clamp(20px, 2.2vw, 26px); }
 
 /* compare slider */
 .compare {
-  --pos: 88%;
+  --pos: 75%;
   position: relative;
   aspect-ratio: 16 / 10.5;
   container-type: inline-size;
@@ -1489,8 +1463,14 @@ h3 { font-size: clamp(20px, 2.2vw, 26px); }
      redundant here and only collide with the mock's own content */
   .tag { display: none; }
 
-  .marquee { flex-wrap: wrap; gap: 10px 14px; }
-  .marquee-viewport { order: 3; flex-basis: 100%; }
+  /* keep the sentence in reading order: "Serving [list] and everywhere
+     else in Chicago" — the note must follow the list, never precede it */
+  .marquee { flex-wrap: wrap; gap: 6px 12px; padding-top: 11px; padding-bottom: 11px; }
+  .marquee-label { order: 1; }
+  /* basis 0, or the track's max-content width forces a wrap instead of a shrink */
+  .marquee-viewport { order: 2; flex: 1 1 0; min-width: 0; }
+  .marquee-note { order: 3; flex-basis: 100%; }
+  .marquee-track { gap: 18px; }
 
   .footer-links { gap: 18px 22px; }
   .footer-base { flex-direction: column; align-items: flex-start; gap: 14px; }

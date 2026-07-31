@@ -192,10 +192,11 @@
           if (!entries[0].isIntersecting || taught) return;
           taught = true;
           io.disconnect();
-          /* Sweep to the redesign and rest there — the demo should end on
-             the proof, not back on the dated site. */
+          /* Sweep across to show the redesign, then settle back to the
+             resting split so the control reads as draggable. */
           compare.classList.add("is-demo");
           setTimeout(function () { setPos(20); }, 420);
+          setTimeout(function () { setPos(75); }, 2100);
         },
         { threshold: 0.55 }
       );
@@ -227,19 +228,6 @@
       }
     });
   });
-
-  /* ---------- marquee: pause control (WCAG 2.2.2) ---------- */
-  var marquee = document.querySelector(".marquee");
-  var pauseBtn = document.getElementById("marquee-pause");
-  if (marquee && pauseBtn) {
-    pauseBtn.addEventListener("click", function () {
-      var paused = marquee.classList.toggle("is-paused");
-      pauseBtn.setAttribute("aria-pressed", paused ? "true" : "false");
-      pauseBtn.querySelector(".sr-only").textContent = paused
-        ? "Resume the scrolling neighborhood list"
-        : "Pause the scrolling neighborhood list";
-    });
-  }
 
   /* ---------- contact form ---------- */
   var form = document.getElementById("contact-form");
