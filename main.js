@@ -4,7 +4,12 @@
 
   var CONTACT_EMAIL = "contactrevise12@gmail.com";
   var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var isTouchLayout = window.matchMedia("(max-width: 700px)").matches;
+  var touchQuery = window.matchMedia("(max-width: 700px)");
+  var isTouchLayout = touchQuery.matches;
+
+  /* Everything that only works with JS is gated on this, so a failed or
+     blocked script leaves no controls that look live and aren't. */
+  document.documentElement.classList.add("js");
 
   /* ---------- nav scroll state ---------- */
   var nav = document.querySelector(".nav");
@@ -35,6 +40,26 @@
       { rootMargin: "-45% 0px -50% 0px" }
     );
     sections.forEach(function (s) { spy.observe(s); });
+  }
+
+  /* ---------- mobile menu: close it after use ----------
+     <details> has no native "dismiss", so without this the panel stays
+     pinned over the fixed header for the rest of the session. */
+  var menu = document.querySelector(".menu");
+  if (menu) {
+    var closeMenu = function () { menu.removeAttribute("open"); };
+    menu.querySelectorAll(".menu-panel a").forEach(function (a) {
+      a.addEventListener("click", closeMenu);
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && menu.hasAttribute("open")) {
+        closeMenu();
+        menu.querySelector("summary").focus();
+      }
+    });
+    document.addEventListener("click", function (e) {
+      if (menu.hasAttribute("open") && !menu.contains(e.target)) closeMenu();
+    });
   }
 
   /* ---------- hero canvas: drifting warm gradient ---------- */
@@ -139,13 +164,9 @@
       });
     }
 
-    /* Every control that jumps to a fixed side: the corner pills on
-       desktop and the toggle bar on touch. */
-    var jumps = Array.prototype.slice.call(
-      compare.querySelectorAll(".tag[data-pos]")
-    ).concat(
-      toggle ? Array.prototype.slice.call(toggle.querySelectorAll("button")) : []
-    );
+    var jumps = toggle
+      ? Array.prototype.slice.call(toggle.querySelectorAll("button"))
+      : [];
 
     jumps.forEach(function (btn) {
       if (!btn.getAttribute("aria-label")) {
@@ -180,9 +201,17 @@
     }
 
     /* On touch, open on the original so the comparison starts where the
-       story does. The CSS fallback stays on the redesign, because without
-       JS these toggle buttons don't exist to switch back with. */
+       story does; on desktop the CSS resting split already applies. */
     if (isTouchLayout) setPos(100);
+
+    /* Crossing the breakpoint swaps drag for buttons, so re-seat the
+       position rather than stranding an inline value from the other mode. */
+    var onLayoutChange = function (e) {
+      isTouchLayout = e.matches;
+      setPos(e.matches ? 100 : 75);
+    };
+    if (touchQuery.addEventListener) touchQuery.addEventListener("change", onLayoutChange);
+    else if (touchQuery.addListener) touchQuery.addListener(onLayoutChange);
 
     /* Teach the interaction once: sweep to the redesign and back,
        so a visitor who never drags still sees the finished work. */
@@ -258,12 +287,9 @@
         test: function (v) { return v.length > 0; },
         message: "Please add your business name so we can look up your site."
       },
-      {
-        id: "f-url",
-        optional: true,
-        test: function (v) { return /^([a-z][a-z0-9+.-]*:\/\/)?[^\s.]+\.[^\s]{2,}$/i.test(v); },
-        message: "That doesn't look like a web address. Something like yoursite.com works."
-      }
+      /* Deliberately not validated: this field is optional, and "it's on
+         Facebook" or "we don't have one" are useful answers we'd rather
+         receive than block. */
     ];
 
     function fieldOf(id) { return document.getElementById(id); }
@@ -385,7 +411,7 @@
         .catch(function () {
           /* Never surface the raw exception — name the problem and the way out. */
           submitBtn.disabled = false;
-          submitBtn.textContent = "Send it over";
+          submitBtn.textContent = "Send my free audit request";
           note.textContent =
             "That didn't send — your connection may have dropped. Try again, or email us at " +
             CONTACT_EMAIL + " and we'll pick it up there.";

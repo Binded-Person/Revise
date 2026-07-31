@@ -207,7 +207,7 @@
             <span>Lincoln Park</span><i>&middot;</i><span>Andersonville</span><i>&middot;</i><span>Logan Square</span><i>&middot;</i><span>Pilsen</span><i>&middot;</i><span>Wicker Park</span><i>&middot;</i><span>Hyde Park</span><i>&middot;</i><span>Lincoln Square</span><i>&middot;</i><span>Bridgeport</span><i>&middot;</i><span>Rogers Park</span><i>&middot;</i><span>Evanston</span><i>&middot;</i>
           </div>
         </div>
-        <p class="marquee-note">and everywhere else in Chicago</p>
+        <p class="marquee-note"><span class="sr-only">Lincoln Park, Andersonville, Logan Square, Pilsen, Wicker Park, Hyde Park, Lincoln Square, Bridgeport, Rogers Park, Evanston, </span>and everywhere else in Chicago</p>
       </div>
     </section>
 
@@ -274,8 +274,6 @@
                 <input type="range" class="compare-range" min="0" max="100" value="75"
                        aria-label="Compare the La Palma Taqueria redesign"
                        data-name="La Palma Taqueria" />
-                <button type="button" class="tag tag-before" data-pos="100">Before</button>
-                <button type="button" class="tag tag-after" data-pos="0">After</button>
               </div>
               <div class="compare-toggle" role="group"></div>
             </div>
@@ -333,8 +331,6 @@
                 <input type="range" class="compare-range" min="0" max="100" value="75"
                        aria-label="Compare the Marigold Salon redesign"
                        data-name="Marigold Salon" />
-                <button type="button" class="tag tag-before" data-pos="100">Before</button>
-                <button type="button" class="tag tag-after" data-pos="0">After</button>
               </div>
               <div class="compare-toggle" role="group"></div>
             </div>
@@ -393,8 +389,6 @@
                 <input type="range" class="compare-range" min="0" max="100" value="75"
                        aria-label="Compare the North Branch Tutoring redesign"
                        data-name="North Branch Tutoring" />
-                <button type="button" class="tag tag-before" data-pos="100">Before</button>
-                <button type="button" class="tag tag-after" data-pos="0">After</button>
               </div>
               <div class="compare-toggle" role="group"></div>
             </div>
@@ -427,7 +421,7 @@
               <li>A full pass on your copy</li>
               <li>Two rounds of revisions included</li>
             </ul>
-            <a class="plan-cta" href="#contact" data-package="Refresh">Start with a free audit</a>
+            <a class="plan-cta" href="#contact" data-package="Refresh" aria-label="Start with a free audit — The Refresh">Start with a free audit</a>
           </div>
           <div class="plan">
             <h3 class="plan-name">The Rebuild</h3>
@@ -440,7 +434,7 @@
               <li>Google Business Profile set up right</li>
               <li>Two rounds of revisions included</li>
             </ul>
-            <a class="plan-cta" href="#contact" data-package="Rebuild">Start with a free audit</a>
+            <a class="plan-cta" href="#contact" data-package="Rebuild" aria-label="Start with a free audit — The Rebuild">Start with a free audit</a>
           </div>
           <div class="plan">
             <h3 class="plan-name">The Care Plan</h3>
@@ -452,7 +446,7 @@
               <li>Fixes within 48 hours</li>
               <li>Cancel any month you like</li>
             </ul>
-            <a class="plan-cta" href="#contact" data-package="Care Plan">Start with a free audit</a>
+            <a class="plan-cta" href="#contact" data-package="Care Plan" aria-label="Start with a free audit — The Care Plan">Start with a free audit</a>
           </div>
         </div>
 
@@ -637,7 +631,10 @@
 
             <div class="field">
               <label for="f-url">Current website <span class="opt">(optional)</span></label>
-              <input id="f-url" name="website" type="url" inputmode="url" placeholder="yoursite.com"
+              <!-- type=text, not url: the placeholder itself fails type=url
+                   validation, and "it's on Facebook" is a real answer -->
+              <input id="f-url" name="website" type="text" inputmode="url"
+                     placeholder="yoursite.com, or tell us where you are"
                      maxlength="200" aria-describedby="e-url" />
               <p class="field-error" id="e-url"></p>
             </div>

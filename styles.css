@@ -510,8 +510,12 @@ h3 { font-size: clamp(20px, 2.2vw, 26px); }
 }
 
 /* compare slider */
+/* Without JS there is no control to move this, so the redesign shows in
+   full; .js restores the resting split that the drag starts from. */
+.compare { --pos: 0%; }
+.js .compare { --pos: 75%; }
+
 .compare {
-  --pos: 75%;
   position: relative;
   aspect-ratio: 16 / 10.5;
   container-type: inline-size;
@@ -591,6 +595,14 @@ h3 { font-size: clamp(20px, 2.2vw, 26px); }
   white-space: nowrap;
 }
 
+/* The drag affordances only work once main.js is running, so they stay
+   hidden until it adds .js — otherwise a failed script leaves an
+   invisible input swallowing clicks over a handle that does nothing. */
+.compare-range, .compare-handle, .drag-hint { display: none; }
+
+.js .compare-range { display: block; }
+.js .compare-handle, .js .drag-hint { display: block; }
+
 .compare-range {
   position: absolute;
   inset: 0;
@@ -611,38 +623,15 @@ h3 { font-size: clamp(20px, 2.2vw, 26px); }
   outline-offset: -3px;
 }
 
-/* these read as controls, so they are controls: one click jumps the
-   comparison to that side without dragging */
-.tag {
-  position: absolute;
-  bottom: 10px;
-  z-index: 5;
-  font-family: var(--font-body);
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  padding: 7px 13px;
-  border: none;
-  border-radius: 999px;
-  cursor: pointer;
-  opacity: 0.55;
-  transition: opacity 0.2s, transform 0.2s;
-}
-
-.tag:hover { opacity: 1; transform: translateY(-1px); }
-.tag[aria-pressed="true"] { opacity: 1; }
-
-.tag-before { left: 10px; background: rgba(25, 23, 19, 0.86); color: #fff; }
-.tag-after { right: 10px; background: var(--red); color: #fff; }
-
-/* touch-friendly alternative to dragging */
+/* One control for every viewport, sitting in the frame's own chrome
+   rather than floating over the mock's content. Built by JS, so it never
+   exists as a dead button when the script doesn't run. */
 .compare-toggle {
   display: none;
   border-top: 1px solid var(--rule);
 }
 
-.compare-toggle:not(:empty) { border-top: 1px solid var(--rule); }
+.compare-toggle:not(:empty) { display: flex; }
 
 .compare-toggle button {
   flex: 1;
@@ -1506,12 +1495,8 @@ h3 { font-size: clamp(20px, 2.2vw, 26px); }
   /* the scribble hugs its own line more tightly at this size */
   .scribble { bottom: 0.06em; }
 
-  /* dragging a small mock is a thumb trap — explicit buttons instead.
-     With no JS the buttons are never built, so the after-mock shows in full
-     rather than leaving a dead control behind. */
-  .compare { --pos: 0%; }
-  .compare-range, .compare-handle, .drag-hint { display: none; }
-  .compare-toggle:not(:empty) { display: flex; }
+  /* dragging a small mock is a thumb trap — buttons only down here */
+  .js .compare-range, .js .compare-handle, .js .drag-hint { display: none; }
 
   /* a 350px-wide container makes cqw type unreadably small, so step it up
      and give the frame more height to hold it */
@@ -1531,9 +1516,6 @@ h3 { font-size: clamp(20px, 2.2vw, 26px); }
   .m2a { grid-template-columns: 1fr; }
   .m3a-body { grid-template-columns: 1fr; gap: 2.4cqw; }
 
-  /* the toggle already names the active view, so the corner pills are
-     redundant here and only collide with the mock's own content */
-  .tag { display: none; }
 
   /* keep the sentence in reading order: "Serving [list] and everywhere
      else in Chicago" — the note must follow the list, never precede it */
