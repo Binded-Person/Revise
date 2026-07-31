@@ -139,19 +139,36 @@
       });
     }
 
+    /* Every control that jumps to a fixed side: the corner pills on
+       desktop and the toggle bar on touch. */
+    var jumps = Array.prototype.slice.call(
+      compare.querySelectorAll(".tag[data-pos]")
+    ).concat(
+      toggle ? Array.prototype.slice.call(toggle.querySelectorAll("button")) : []
+    );
+
+    jumps.forEach(function (btn) {
+      if (!btn.getAttribute("aria-label")) {
+        btn.setAttribute("aria-label", btn.textContent.trim() + ": " + name);
+      }
+      btn.setAttribute("aria-pressed", "false");
+      btn.addEventListener("click", function () {
+        compare.classList.add("is-demo");
+        setPos(Number(btn.dataset.pos));
+      });
+    });
+
     function setPos(v) {
       compare.style.setProperty("--pos", v + "%");
       if (range) {
         range.value = v;
         range.setAttribute("aria-valuetext", describe(v));
       }
-      if (toggle) {
-        toggle.querySelectorAll("button").forEach(function (b) {
-          var on = Number(b.dataset.pos) === Number(v);
-          b.classList.toggle("is-active", on);
-          b.setAttribute("aria-pressed", on ? "true" : "false");
-        });
-      }
+      jumps.forEach(function (b) {
+        var on = Number(b.dataset.pos) === Number(v);
+        b.classList.toggle("is-active", on);
+        b.setAttribute("aria-pressed", on ? "true" : "false");
+      });
     }
 
     if (range) {
@@ -165,15 +182,6 @@
     /* On touch, open on the redesign: it's the proof, and a visitor who
        never taps should still see the finished work. */
     if (isTouchLayout) setPos(0);
-
-    if (toggle) {
-      toggle.querySelectorAll("button").forEach(function (btn) {
-        btn.addEventListener("click", function () {
-          compare.classList.add("is-demo");
-          setPos(Number(btn.dataset.pos));
-        });
-      });
-    }
 
     /* Teach the interaction once: sweep to the redesign and back,
        so a visitor who never drags still sees the finished work. */

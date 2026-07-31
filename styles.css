@@ -330,7 +330,7 @@ h3 { font-size: clamp(20px, 2.2vw, 26px); }
 .scribble {
   position: absolute;
   left: -1%;
-  bottom: -0.12em;
+  bottom: 0.03em;
   width: 102%;
   height: 0.16em;
   color: var(--red);
@@ -637,20 +637,29 @@ h3 { font-size: clamp(20px, 2.2vw, 26px); }
   outline-offset: -3px;
 }
 
+/* these read as controls, so they are controls: one click jumps the
+   comparison to that side without dragging */
 .tag {
   position: absolute;
   bottom: 10px;
-  z-index: 2;
+  z-index: 5;
+  font-family: var(--font-body);
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  padding: 4px 10px;
+  padding: 7px 13px;
+  border: none;
   border-radius: 999px;
-  pointer-events: none;
+  cursor: pointer;
+  opacity: 0.55;
+  transition: opacity 0.2s, transform 0.2s;
 }
 
-.tag-before { left: 10px; background: rgba(25, 23, 19, 0.78); color: #fff; }
+.tag:hover { opacity: 1; transform: translateY(-1px); }
+.tag[aria-pressed="true"] { opacity: 1; }
+
+.tag-before { left: 10px; background: rgba(25, 23, 19, 0.86); color: #fff; }
 .tag-after { right: 10px; background: var(--red); color: #fff; }
 
 /* touch-friendly alternative to dragging */
@@ -1454,7 +1463,7 @@ h3 { font-size: clamp(20px, 2.2vw, 26px); }
   .hero-cta { gap: 20px; }
 
   /* the scribble hugs its own line more tightly at this size */
-  .scribble { bottom: -0.04em; }
+  .scribble { bottom: 0.06em; }
 
   /* dragging a small mock is a thumb trap — explicit buttons instead.
      With no JS the buttons are never built, so the after-mock shows in full
