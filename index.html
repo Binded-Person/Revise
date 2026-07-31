@@ -181,7 +181,7 @@
       <canvas id="hero-canvas" aria-hidden="true"></canvas>
       <div class="container hero-inner">
         <h1 class="hero-title">
-          A <span class="underlined">second chance<svg class="scribble" viewBox="0 0 220 14" preserveAspectRatio="none" aria-hidden="true"><path d="M3 10 C 40 4, 80 12, 118 7 S 190 9, 217 5" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg></span> at a first impression.
+          A <span class="underlined">second chance<svg class="scribble" viewBox="0 0 220 14" preserveAspectRatio="none" aria-hidden="true"><path d="M3 10 C 40 4, 80 12, 118 7 S 190 9, 217 5" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg></span> at a first impression
         </h1>
         <p class="hero-sub">
           Revise is a two-person web studio in Chicago. We take the outdated
@@ -215,7 +215,7 @@
     <section class="section" id="work">
       <div class="container">
         <div class="section-head">
-          <h2>Before, meet after.</h2>
+          <h2>Before, meet after</h2>
           <p class="section-sub">
             We're a new studio, so here's the honest version: these are concept redesigns
             of invented storefronts, not paying clients. Real standards, real code, no real
@@ -252,19 +252,20 @@
                   </div>
                 </div>
                 <div class="shot after" aria-hidden="true">
+                  <!-- full-bleed, food-led: the photo carries the page -->
                   <div class="m1a">
-                    <div class="m1a-nav"><b>La Palma</b><span class="m1a-links">Menu &nbsp; About &nbsp; Visit</span><span class="m1a-chip">Open till 10</span></div>
                     <div class="m1a-hero">
+                      <div class="m1a-top"><b>La Palma</b><span class="m1a-chip">Open till 10</span></div>
                       <div class="m1a-hero-text">
-                        <h4>Tacos worth crossing town for.</h4>
-                        <p>Family-made in Pilsen since 1998.</p>
+                        <h4>Tacos worth<br/>crossing town for</h4>
+                        <p>Family-made in Pilsen since 1998</p>
                         <span class="m1a-btn">Order pickup</span>
                       </div>
                     </div>
-                    <div class="m1a-row">
-                      <div class="m1a-card"><b>Al pastor</b><span>$3.50</span></div>
-                      <div class="m1a-card"><b>Carne asada</b><span>$3.75</span></div>
-                      <div class="m1a-card"><b>Birria</b><span>$4.25</span></div>
+                    <div class="m1a-menu">
+                      <div><b>Al pastor</b><span>$3.50</span></div>
+                      <div><b>Carne asada</b><span>$3.75</span></div>
+                      <div><b>Birria</b><span>$4.25</span></div>
                     </div>
                   </div>
                 </div>
@@ -309,18 +310,22 @@
                   </div>
                 </div>
                 <div class="shot after" aria-hidden="true">
+                  <!-- asymmetric split: booking on the left, prices always visible right -->
                   <div class="m2a">
-                    <div class="m2a-nav"><b>Marigold</b><span>Services &nbsp; Stylists &nbsp; Visit</span><span class="m2a-btn">Book</span></div>
-                    <div class="m2a-hero">
-                      <h4>Good hair days,<br/>on schedule.</h4>
-                      <p>A neighborhood salon in Andersonville.</p>
+                    <div class="m2a-left">
+                      <b>Marigold</b>
+                      <h4>Good hair days,<br/>on schedule</h4>
+                      <p>A neighborhood salon on Clark Street</p>
+                      <span class="m2a-btn">Book online</span>
+                      <span class="m2a-hours">Walk-ins Tue&ndash;Sat</span>
                     </div>
-                    <div class="m2a-services">
-                      <div><span>Cut &amp; style</span><i></i><b>from $45</b></div>
-                      <div><span>Full color</span><i></i><b>from $90</b></div>
-                      <div><span>Blowout</span><i></i><b>$35</b></div>
+                    <div class="m2a-right">
+                      <div class="m2a-head">Services</div>
+                      <div><span>Cut &amp; style</span><b>from $45</b></div>
+                      <div><span>Full color</span><b>from $90</b></div>
+                      <div><span>Balayage</span><b>from $120</b></div>
+                      <div><span>Blowout</span><b>$35</b></div>
                     </div>
-                    <div class="m2a-foot">Walk-ins welcome Tue&ndash;Sat &middot; On Clark Street in Andersonville</div>
                   </div>
                 </div>
                 <div class="compare-handle" aria-hidden="true"><span></span></div>
@@ -364,14 +369,23 @@
                   </div>
                 </div>
                 <div class="shot after" aria-hidden="true">
+                  <!-- utility layout: the schedule is the thing parents came for -->
                   <div class="m3a">
-                    <div class="m3a-nav"><b>North Branch</b><span>Subjects &nbsp; Tutors &nbsp; Pricing</span><span class="m3a-btn">Free session</span></div>
-                    <div class="m3a-hero">
-                      <h4>Better grades start here.</h4>
-                      <p>One-on-one tutoring in Lincoln Square. First session free.</p>
+                    <div class="m3a-bar"><b>North Branch</b><span class="m3a-btn">Free first session</span></div>
+                    <div class="m3a-body">
+                      <div class="m3a-main">
+                        <h4>Better grades start here</h4>
+                        <p>One-on-one tutoring in Lincoln Square</p>
+                        <div class="m3a-chips"><span>Algebra</span><span>Geometry</span><span>Chemistry</span><span>Essay writing</span><span>SAT prep</span><span>ACT prep</span></div>
+                      </div>
+                      <div class="m3a-card">
+                        <div class="m3a-card-h">This week</div>
+                        <div><b>Mon&ndash;Thu</b><span>3&ndash;7pm</span></div>
+                        <div><b>Friday</b><span>3&ndash;5pm</span></div>
+                        <div><b>Saturday</b><span>10am&ndash;1pm</span></div>
+                        <span class="m3a-card-cta">Book a time</span>
+                      </div>
                     </div>
-                    <div class="m3a-chips"><span>Algebra</span><span>Geometry</span><span>Chemistry</span><span>Essay writing</span><span>SAT prep</span><span>ACT prep</span></div>
-                    <div class="m3a-foot"><b>Mon&ndash;Fri, 3&ndash;7pm</b><span>Near the Western Brown Line</span><i>Book a time &rarr;</i></div>
                   </div>
                 </div>
                 <div class="compare-handle" aria-hidden="true"><span></span></div>
@@ -394,7 +408,7 @@
     <section class="section dark" id="services">
       <div class="container">
         <div class="section-head">
-          <h2>What it costs, before you ask.</h2>
+          <h2>What it costs, before you ask</h2>
           <p class="section-sub">
             Local agencies in Chicago start around $1,500 and go up from there. We're
             students with near-zero overhead, so the same care costs less. Flat quotes,
@@ -453,7 +467,7 @@
     <section class="section" id="process">
       <div class="container">
         <div class="section-head">
-          <h2>How a project actually goes.</h2>
+          <h2>How a project actually goes</h2>
         </div>
         <ol class="steps">
           <li class="step">
@@ -484,7 +498,7 @@
     <section class="section about" id="about">
       <div class="container about-grid">
         <div class="about-left">
-          <h2>Who you're<br />actually hiring.</h2>
+          <h2>Who you're<br />actually hiring</h2>
           <p class="about-names">Mukil &amp; Sarthak</p>
           <p class="about-role">Founders, Revise &middot; Chicago</p>
           <ul class="edits about-edits">
@@ -518,7 +532,7 @@
     <section class="section faq-section" id="faq">
       <div class="container faq-grid">
         <div class="faq-head">
-          <h2>Fair questions,<br />straight answers.</h2>
+          <h2>Fair questions,<br />straight answers</h2>
           <blockquote class="faq-pull">
             <p>If you walk away after the first payment, you owe nothing further
               and we keep nothing of yours.</p>
@@ -580,7 +594,7 @@
     <section class="section dark contact" id="contact">
       <div class="container contact-grid">
         <div class="contact-left">
-          <h2>Tell us about your site. We'll tell you the truth.</h2>
+          <h2>Tell us about your site. We'll tell you the truth</h2>
           <p class="contact-sub">
             Send this over and we'll reply within a day with a free, honest audit:
             three specific things that are costing you customers, and what we'd do
