@@ -179,9 +179,10 @@
       range.setAttribute("aria-valuetext", describe(Number(range.value)));
     }
 
-    /* On touch, open on the redesign: it's the proof, and a visitor who
-       never taps should still see the finished work. */
-    if (isTouchLayout) setPos(0);
+    /* On touch, open on the original so the comparison starts where the
+       story does. The CSS fallback stays on the redesign, because without
+       JS these toggle buttons don't exist to switch back with. */
+    if (isTouchLayout) setPos(100);
 
     /* Teach the interaction once: sweep to the redesign and back,
        so a visitor who never drags still sees the finished work. */
