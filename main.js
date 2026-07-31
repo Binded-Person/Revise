@@ -15,10 +15,12 @@
   onScroll();
 
   /* ---------- nav: mark the section you're in ---------- */
-  var navLinks = Array.prototype.slice.call(document.querySelectorAll(".nav-links a"));
+  var navLinks = Array.prototype.slice.call(
+    document.querySelectorAll(".nav-links a, .menu-panel a")
+  );
   var sections = navLinks
     .map(function (a) { return document.querySelector(a.getAttribute("href")); })
-    .filter(Boolean);
+    .filter(function (el, i, all) { return el && all.indexOf(el) === i; });
 
   if (sections.length && "IntersectionObserver" in window) {
     var spy = new IntersectionObserver(
@@ -94,15 +96,17 @@
         }
       };
       requestAnimationFrame(loop);
-      new IntersectionObserver(function (entries) {
-        var visible = entries[0].isIntersecting;
-        if (visible && !running) {
-          running = true;
-          requestAnimationFrame(loop);
-        } else {
-          running = visible;
-        }
-      }).observe(canvas);
+      if ("IntersectionObserver" in window) {
+        new IntersectionObserver(function (entries) {
+          var visible = entries[0].isIntersecting;
+          if (visible && !running) {
+            running = true;
+            requestAnimationFrame(loop);
+          } else {
+            running = visible;
+          }
+        }).observe(canvas);
+      }
     }
   }
 
@@ -119,6 +123,21 @@
     var range = compare.querySelector(".compare-range");
     var frame = compare.closest(".frame");
     var toggle = frame ? frame.querySelector(".compare-toggle") : null;
+    var name = range ? range.dataset.name || "this site" : "this site";
+
+    /* Built in JS so they never exist as dead controls when the script
+       doesn't run; the CSS fallback shows the redesign in full instead. */
+    if (toggle) {
+      [["Before", 100], ["After", 0]].forEach(function (pair) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.textContent = pair[0];
+        b.dataset.pos = pair[1];
+        b.setAttribute("aria-label", pair[0] + ": " + name);
+        b.setAttribute("aria-pressed", "false");
+        toggle.appendChild(b);
+      });
+    }
 
     function setPos(v) {
       compare.style.setProperty("--pos", v + "%");
@@ -128,7 +147,9 @@
       }
       if (toggle) {
         toggle.querySelectorAll("button").forEach(function (b) {
-          b.classList.toggle("is-active", Number(b.dataset.pos) === Number(v));
+          var on = Number(b.dataset.pos) === Number(v);
+          b.classList.toggle("is-active", on);
+          b.setAttribute("aria-pressed", on ? "true" : "false");
         });
       }
     }
@@ -141,9 +162,9 @@
       range.setAttribute("aria-valuetext", describe(Number(range.value)));
     }
 
-    /* On touch the toggle replaces the drag, and it opens on "Before",
-       so show the original in full rather than the 88% drag resting state. */
-    if (isTouchLayout) setPos(100);
+    /* On touch, open on the redesign: it's the proof, and a visitor who
+       never taps should still see the finished work. */
+    if (isTouchLayout) setPos(0);
 
     if (toggle) {
       toggle.querySelectorAll("button").forEach(function (btn) {
@@ -163,9 +184,10 @@
           if (!entries[0].isIntersecting || taught) return;
           taught = true;
           io.disconnect();
+          /* Sweep to the redesign and rest there — the demo should end on
+             the proof, not back on the dated site. */
           compare.classList.add("is-demo");
-          setTimeout(function () { setPos(18); }, 420);
-          setTimeout(function () { setPos(88); }, 2100);
+          setTimeout(function () { setPos(20); }, 420);
         },
         { threshold: 0.55 }
       );
@@ -175,11 +197,41 @@
 
   /* ---------- pricing CTA carries the choice to the form ---------- */
   var packageField = document.getElementById("f-package");
+  var picked = document.getElementById("plan-picked");
   document.querySelectorAll(".plan-cta").forEach(function (cta) {
     cta.addEventListener("click", function () {
-      if (packageField && cta.dataset.package) packageField.value = cta.dataset.package;
+      var choice = cta.dataset.package;
+      if (!packageField || !choice) return;
+      packageField.value = choice;
+      /* Confirm the handoff — otherwise the choice vanishes into a
+         hidden select 4,000px from where it was made. */
+      if (picked) {
+        picked.textContent = "";
+        picked.appendChild(document.createTextNode("You picked "));
+        var s = document.createElement("strong");
+        s.textContent = "The " + choice;
+        picked.appendChild(s);
+        picked.appendChild(document.createTextNode(". "));
+        var n = document.createElement("span");
+        n.textContent = "You can change it below, or leave it to us.";
+        picked.appendChild(n);
+        picked.hidden = false;
+      }
     });
   });
+
+  /* ---------- marquee: pause control (WCAG 2.2.2) ---------- */
+  var marquee = document.querySelector(".marquee");
+  var pauseBtn = document.getElementById("marquee-pause");
+  if (marquee && pauseBtn) {
+    pauseBtn.addEventListener("click", function () {
+      var paused = marquee.classList.toggle("is-paused");
+      pauseBtn.setAttribute("aria-pressed", paused ? "true" : "false");
+      pauseBtn.querySelector(".sr-only").textContent = paused
+        ? "Resume the scrolling neighborhood list"
+        : "Pause the scrolling neighborhood list";
+    });
+  }
 
   /* ---------- contact form ---------- */
   var form = document.getElementById("contact-form");
@@ -188,6 +240,10 @@
     var submitBtn = document.getElementById("form-submit");
     var wrap = document.getElementById("form-region");
     var attempted = false;
+
+    /* Suppress native validation only now that JS is confirmed running.
+       Without this script the browser's own checks stay in force. */
+    form.noValidate = true;
 
     var RULES = [
       {
@@ -248,12 +304,21 @@
     RULES.forEach(function (rule) {
       var input = fieldOf(rule.id);
       if (!input) return;
-      input.addEventListener("blur", function () {
+
+      function recheck() {
         if (!attempted) return;
         var value = input.value.trim();
         var empty = value.length === 0;
         var ok = rule.optional && empty ? true : rule.test(value);
         setError(rule.id, ok ? "" : rule.message);
+      }
+
+      input.addEventListener("blur", recheck);
+      /* Clear a resolved error as they type, rather than making them
+         guess whether the fix took. */
+      input.addEventListener("input", function () {
+        if (!attempted) return;
+        if (input.closest(".field").classList.contains("has-error")) recheck();
       });
     });
 
@@ -278,10 +343,13 @@
       box.appendChild(p);
       box.appendChild(p2);
 
-      /* Replace only the form. #form-note lives outside it, so the live
-         region survives and the confirmation is announced. */
-      form.replaceWith(box);
-      note.textContent = "Your request was sent.";
+      /* Hide rather than remove, so nothing that had focus is destroyed
+         mid-interaction, then move focus to the confirmation so it's
+         announced and the keyboard position stays sensible. */
+      form.hidden = true;
+      (wrap || form.parentNode).appendChild(box);
+      box.setAttribute("tabindex", "-1");
+      box.focus();
     }
 
     form.addEventListener("submit", function (e) {
